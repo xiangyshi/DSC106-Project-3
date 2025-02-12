@@ -25,14 +25,8 @@
     </div>
     </div>
 
-    <script type="module">
-    import { createChart } from "../js/line_plot.js";
-
-    document.addEventListener("DOMContentLoaded", function() {
-        createChart("#svgFemale", "#mouseSelectFemale", "../assets/data/female_data.csv", "green");
-        createChart("#svgMale", "#mouseSelectMale", "../assets/data/male_data.csv", "blue");
-    });
-    </script>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script src="../js/line_plot.js" defer></script>
     
 
     <!-- Jason -->
