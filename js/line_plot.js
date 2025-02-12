@@ -2,7 +2,7 @@ const margin = { top: 40, right: 60, bottom: 50, left: 60 },
       width = 800 - margin.left - margin.right,
       height = 500 - margin.top - margin.bottom;
 
-export function createChart(containerID, dropdownID, dataPath, color) {
+function createChart(containerID, dropdownID, dataPath, color) {
     const svg = d3.select(containerID)
         .append("svg")
         .attr("width", width + margin.left + margin.right)
@@ -109,5 +109,5 @@ export function createChart(containerID, dropdownID, dataPath, color) {
         });
     });
 }
-// createChart("#svgFemale", "#mouseSelectFemale", "../assets/data/female_data.csv", "green");
-// createChart("#svgMale", "#mouseSelectMale", "../assets/data/male_data.csv", "blue");
+createChart("#svgFemale", "#mouseSelectFemale", "../assets/data/female_data.csv", "green");
+createChart("#svgMale", "#mouseSelectMale", "../assets/data/male_data.csv", "blue");
