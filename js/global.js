@@ -20,7 +20,7 @@ async function fetchCSV(filepath) {
             throw new Error('Network response was not ok');
         }
         const data = await response.text();
-        displayCSVData(data);
+        displayCSVData(data)
     } catch (error) {
         console.error('Error fetching the CSV file:', error);
     }
