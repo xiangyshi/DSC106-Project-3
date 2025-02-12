@@ -1,6 +1,7 @@
-const margin = { top: 40, right: 60, bottom: 50, left: 60 },
-      width = 800 - margin.left - margin.right,
-      height = 500 - margin.top - margin.bottom;
+const margin = { top: 80, right: 80, bottom: 80, left: 80 };
+const spacing = 50; 
+const width = window.innerWidth * 0.4;
+const height = window.innerHeight * 0.4;
 
 function createChart(containerID, dropdownID, dataPath, color) {
     const svg = d3.select(containerID)
@@ -31,10 +32,8 @@ function createChart(containerID, dropdownID, dataPath, color) {
             d.temperature = +d.temperature;
         });
 
-        // Mouse IDs
         const mouseIDs = [...new Set(data.map(d => d.mouse_id))];
 
-        // Populate dropdown
         const select = d3.select(dropdownID);
         select.selectAll("option")
             .data(mouseIDs)
@@ -44,8 +43,8 @@ function createChart(containerID, dropdownID, dataPath, color) {
             .attr("value", d => d);
 
         xScale.domain(d3.extent(data, d => d.minute));
-        yScaleActivity.domain([0, d3.max(data, d => d.activity)]);
-        yScaleTemp.domain([d3.min(data, d => d.temperature) - 0.5, d3.max(data, d => d.temperature) + 0.5]);
+        yScaleActivity.domain([0, d3.max(data, d => d.activity) * 1.1]);  
+        yScaleTemp.domain([d3.min(data, d => d.temperature) - 1, d3.max(data, d => d.temperature) + 1]);
 
         const xAxis = d3.axisBottom(xScale);
         const yAxisActivity = d3.axisLeft(yScaleActivity);
@@ -55,22 +54,32 @@ function createChart(containerID, dropdownID, dataPath, color) {
         svg.append("g").attr("class", "y-axis-activity").call(yAxisActivity);
         svg.append("g").attr("class", "y-axis-temp").attr("transform", `translate(${width},0)`).call(yAxisTemp);
 
-        svg.append("text").attr("x", width / 2).attr("y", height + 40)
-            .attr("text-anchor", "middle").attr("class", "axis-label").text("Time (minutes)");
+        svg.append("text")
+            .attr("x", width / 2)
+            .attr("y", height + 50)
+            .attr("text-anchor", "middle")
+            .attr("class", "axis-label")
+            .text("Time (minutes)");
 
-        svg.append("text").attr("x", -height / 2).attr("y", -50)
-            .attr("text-anchor", "middle").attr("class", "axis-label")
-            .attr("transform", "rotate(-90)").text("Activity Level");
+        svg.append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("x", -height / 2)
+            .attr("y", -50)
+            .attr("text-anchor", "middle")
+            .attr("class", "axis-label")
+            .text("Activity Level");
 
-        svg.append("text").attr("x", width + 50).attr("y", height / 2)
-            .attr("text-anchor", "middle").attr("class", "axis-label")
-            .attr("transform", "rotate(90)").text("Temperature (°C)");
+        svg.append("text")
+            .attr("transform", `rotate(90) translate(${-height / 2},${width + 50})`)
+            .attr("text-anchor", "middle")
+            .attr("class", "axis-label")
+            .text("Temperature (°C)");
 
         function updateChart(selectedMouse) {
             const filteredData = data.filter(d => d.mouse_id === selectedMouse);
 
-            yScaleActivity.domain([0, d3.max(filteredData, d => d.activity)]);
-            yScaleTemp.domain([d3.min(filteredData, d => d.temperature) - 0.5, d3.max(filteredData, d => d.temperature) + 0.5]);
+            yScaleActivity.domain([0, d3.max(filteredData, d => d.activity) * 1.1]);
+            yScaleTemp.domain([d3.min(filteredData, d => d.temperature) - 1, d3.max(filteredData, d => d.temperature) + 1]);
 
             svg.select(".y-axis-activity").transition().duration(1000).call(yAxisActivity);
             svg.select(".y-axis-temp").transition().duration(1000).call(yAxisTemp);
@@ -86,7 +95,7 @@ function createChart(containerID, dropdownID, dataPath, color) {
                 .attr("d", activityLine)
                 .attr("stroke", color)
                 .attr("fill", "none")
-                .attr("stroke-width", 1.5);
+                .attr("stroke-width", 2);
 
             tempPath.enter()
                 .append("path")
@@ -94,9 +103,9 @@ function createChart(containerID, dropdownID, dataPath, color) {
                 .merge(tempPath)
                 .transition().duration(1000)
                 .attr("d", tempLine)
-                .attr("stroke", "orange")
+                .attr("stroke", "firebrick")
                 .attr("fill", "none")
-                .attr("stroke-width", 1.5);
+                .attr("stroke-width", 2);
 
             activityPath.exit().remove();
             tempPath.exit().remove();
@@ -109,5 +118,6 @@ function createChart(containerID, dropdownID, dataPath, color) {
         });
     });
 }
-createChart("#svgFemale", "#mouseSelectFemale", "../assets/data/female_data.csv", "green");
-createChart("#svgMale", "#mouseSelectMale", "../assets/data/male_data.csv", "blue");
+
+createChart("#svgFemale", "#mouseSelectFemale", "../assets/data/female_data.csv", "darkgrey");
+createChart("#svgMale", "#mouseSelectMale", "../assets/data/male_data.csv", "darkseagreen");
