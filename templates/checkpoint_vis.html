@@ -24,7 +24,16 @@
         <div id="svgFemale"></div>
     </div>
     </div>
+
     <script src="../js/line_plot.js" type="module" defer></script>
+    <script>
+
+    document.addEventListener("DOMContentLoaded", function() {
+        createChart("#svgFemale", "#mouseSelectFemale", "../assets/data/female_data.csv", "green");
+        createChart("#svgMale", "#mouseSelectMale", "../assets/data/male_data.csv", "blue");
+    });
+    </script>
+    
 
     <!-- Jason -->
     <h3> Temperature Histograms </h3>
