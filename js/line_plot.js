@@ -109,5 +109,5 @@ function createChart(containerID, dropdownID, dataPath, color) {
         });
     });
 }
-createChart("#svgFemale", "#mouseSelectFemale", "../assets/data/female_data.csv", "green");
-createChart("#svgMale", "#mouseSelectMale", "../assets/data/male_data.csv", "blue");
+// createChart("#svgFemale", "#mouseSelectFemale", "../assets/data/female_data.csv", "green");
+// createChart("#svgMale", "#mouseSelectMale", "../assets/data/male_data.csv", "blue");
