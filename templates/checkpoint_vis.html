@@ -11,8 +11,19 @@
         
     <!-- Jessica -->
     <h3> Time Series Plots </h3>
-    <div id="line-plot-male"></div>
-    <div id="line-plot-fem"></div>
+    <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+    <div style="width: 45vw; height: 40vh;">
+        <label for="mouseSelectMale">Select Male Mouse:</label>
+        <select id="mouseSelectMale"></select>
+        <div id="svgMale"></div>
+    </div>
+
+    <div style="width: 45vw; height: 40vh;">
+        <label for="mouseSelectFemale">Select Female Mouse:</label>
+        <select id="mouseSelectFemale"></select>
+        <div id="svgFemale"></div>
+    </div>
+</div>
 
     <!-- Jason -->
     <h3> Temperature Histograms </h3>
