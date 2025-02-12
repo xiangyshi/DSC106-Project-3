@@ -20,7 +20,21 @@
 
     <!-- Jianyun -->
     <h3> Activity Histograms </h3>
-    <div id="act-hist-male"></div>
-    <div id="act-hist-fem"></div>
+    <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+        <div style="width: 45vw; height: 40vh;">
+            <label for="male-select">Select Male Mouse:</label>
+            <select id="male-select"></select>
+            <canvas id="act-hist-male"></canvas>
+        </div>
+    
+        <div style="width: 45vw; height: 40vh;">
+            <label for="female-select">Select Female Mouse:</label>
+            <select id="female-select"></select>
+            <canvas id="act-hist-fem"></canvas>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../js/jianyun_act_hist.js"></script>
 </body>
 </html>
