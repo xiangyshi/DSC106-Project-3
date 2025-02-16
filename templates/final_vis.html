@@ -4,9 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Final Visualization</title>
+    <!-- <link rel="stylesheet" href="../css/style.css"> -->
 </head>
 <body>
     <h1> Progress Page </h1>
+    <!-- Temperature Histogram -->
+    <div id="histogram-container">
+        <div id="intro-text">
+            <h3>Introduction to the Temperature Data</h3>
+            <p style="padding: 50px; text-align: justify; text-align-last: center;">
+              The temperature data reveals a <strong>bi-modal pattern</strong> with two distinct peaks.
+              In the <strong>first peak (36.1°C to 36.7°C)</strong>, the temperature counts for female
+              mice are <strong>significantly higher than those for male mice</strong>. In the
+              <strong>second peak</strong>, the values for males and females <strong>diverge slightly</strong>,
+              with <strong>males peaking around 37.3°C</strong> and <strong>females around 38.1°C</strong>.
+              This observation led us to investigate potential factors contributing to these differences.
+              We explore the <strong>daily cycle patterns</strong>, <strong>activity levels</strong>, and
+              <strong>the estrous cycle in female mice</strong> to better understand the underlying causes.
+            </p>
+        </div>
+        <label for="dataSelection">Select Data to Display:</label>
+            <select id="dataSelection">
+            <option value="temp">Temperature Distribution</option>
+            <option value="activity">Activity Distribution</option>
+            </select>
+        <div id="temp-hist" style="display: block;"></div>
+        <div id="activity-hist" style="display: none;"></div>
+    </div>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="../js/histogram_overlayed.js"></script>
 
     <!-- Temperature & Activity Comparison -->
     <h3>Temperature & Activity Comparison</h3>
