@@ -6,8 +6,8 @@
 
 #individual-chart-controls {
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: 10px;
+    right: 10px;
     background: rgba(255,255,255,0.95);
     border: 1px solid #ccc;
     padding: 10px;

@@ -19,6 +19,7 @@
     <div id="super-container">
         <!-- Temperature Histogram -->
         <div id="histogram-container" style="align-content: center;">
+            <h2> Distribution Insepction </h2>
             <div id="intro-text">
                 <h3>Introduction to the Temperature Data</h3>
                 <p style="padding: 50px; text-align: justify; text-align-last: center;">
@@ -45,7 +46,17 @@
 
         <!-- Temperature & Activity Comparison -->
         <div id="comparison-container">
-            <h3>Temperature & Activity Comparison</h3>
+            <h2>Temperature & Activity Comparison</h2>
+            <div id="intro-text">
+                <h3>Detailed Exploration</h3>
+                <p style="padding: 50px; text-align: justify; text-align-last: center;">
+                Below is the detailed time-series data visualization with considerations of <strong>light-dark cycle, estrus cycle, as well as sex differences</strong> between the mice.
+                The <strong>light-dark cycle</strong> is represented through the interchanging background color where yellow signifies light, and black signifies dark. The <strong>estrus cycle</strong> of female
+                mice starts on day 2, and repeats every 4 days. The start of the estrus cycle is labeled using red dotted lines as shown below.
+                On the left, you may select to switch from a <strong>general view (averaged data)</strong>, to a more detailed, exploration mode to compare <strong>individual mice.</strong>
+                Note that the data are standardized using min-max normalization for axis-alignment, but the tooltip shows original raw data at a specific timestamp.
+                </p>
+            </div>
             <select id="dataMode">
                 <option value="average">Average</option>
                 <option value="individual">Individual Cases</option>
@@ -60,8 +71,7 @@
                     </div>
                 </div>
             </div>
-            <div id="actTooltip" style="position:absolute; pointer-events:none; background:#fff; padding:5px; border:1px solid #ccc; display:none;"></div>
-            <div id="tooltip" style="position:absolute; pointer-events:none; background:#fff; padding:5px; border:1px solid #ccc; display:none;"></div>
+            <div id="tooltip" style="position: absolute; display: none; background: rgba(255,255,255,0.9); padding: 5px; border: 1px solid #ccc; border-radius: 3px; pointer-events: none; font-family: sans-serif; font-size: 12px;"></div>
         </div>
     </div>
     <script src="../js/comparison.js"></script>
