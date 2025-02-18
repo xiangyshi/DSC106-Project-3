@@ -104,7 +104,7 @@ d3.csv("../assets/data/male_act.csv").then(maleData => {
     d3.select("#activity_chart").html("");
   
     // Set up dimensions and margins
-    const width = 800,
+    const width = 1600,
           height = 400,
           margin = { top: 20, right: 50, bottom: 50, left: 50 };
   
@@ -134,7 +134,7 @@ d3.csv("../assets/data/male_act.csv").then(maleData => {
     const ticks = d3.range(0, 20160 + 1, 1440);
     const xAxis = d3.axisBottom(xScale)
         .tickValues(ticks)
-        .tickFormat(d => `${Math.floor(d / 1440)}d`);
+        .tickFormat(d => `${Math.floor(d / 1440) + 1}d`);
     svg.append("g")
       .attr("transform", `translate(0, ${height - margin.top - margin.bottom})`)
       .call(xAxis)

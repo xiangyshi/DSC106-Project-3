@@ -6,65 +6,66 @@
     <title>Final Visualization</title>
     <!-- <link rel="stylesheet" href="../css/style.css"> -->
     <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="../js/temperature_com.js"></script>
-    <script src="../js/activity_com.js"></script>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/comp.css">
 </head>
 <body>
     <h1> Progress Page </h1>
-    <!-- Temperature Histogram -->
-    <div id="histogram-container">
-        <div id="intro-text">
-            <h3>Introduction to the Temperature Data</h3>
-            <p style="padding: 50px; text-align: justify; text-align-last: center;">
-              The temperature data reveals a <strong>bi-modal pattern</strong> with two distinct peaks.
-              In the <strong>first peak (36.1°C to 36.7°C)</strong>, the temperature counts for female
-              mice are <strong>significantly higher than those for male mice</strong>. In the
-              <strong>second peak</strong>, the values for males and females <strong>diverge slightly</strong>,
-              with <strong>males peaking around 37.3°C</strong> and <strong>females around 38.1°C</strong>.
-              This observation led us to investigate potential factors contributing to these differences.
-              We explore the <strong>daily cycle patterns</strong>, <strong>activity levels</strong>, and
-              <strong>the estrous cycle in female mice</strong> to better understand the underlying causes.
-            </p>
+    <nav>
+        <button id="showHistogram" class="active">Histogram</button>
+        <button id="showComparison">Comparison</button>
+    </nav>
+
+    <div id="super-container">
+        <!-- Temperature Histogram -->
+        <div id="histogram-container" style="align-content: center;">
+            <div id="intro-text">
+                <h3>Introduction to the Temperature Data</h3>
+                <p style="padding: 50px; text-align: justify; text-align-last: center;">
+                The temperature data reveals a <strong>bi-modal pattern</strong> with two distinct peaks.
+                In the <strong>first peak (36.1°C to 36.7°C)</strong>, the temperature counts for female
+                mice are <strong>significantly higher than those for male mice</strong>. In the
+                <strong>second peak</strong>, the values for males and females <strong>diverge slightly</strong>,
+                with <strong>males peaking around 37.3°C</strong> and <strong>females around 38.1°C</strong>.
+                This observation led us to investigate potential factors contributing to these differences.
+                We explore the <strong>daily cycle patterns</strong>, <strong>activity levels</strong>, and
+                <strong>the estrous cycle in female mice</strong> to better understand the underlying causes.
+                </p>
+            </div>
+            <label for="dataSelection">Select Data to Display:</label>
+                <select id="dataSelection">
+                    <option value="temp">Temperature Distribution</option>
+                    <option value="activity">Activity Distribution</option>
+                </select>
+            <div id="temp-hist" style="display: block;"></div>
+            <div id="activity-hist" style="display: none;"></div>
         </div>
-        <label for="dataSelection">Select Data to Display:</label>
-            <select id="dataSelection">
-            <option value="temp">Temperature Distribution</option>
-            <option value="activity">Activity Distribution</option>
+        <script src="https://d3js.org/d3.v7.min.js"></script>
+        <script src="../js/histogram_overlayed.js"></script>
+
+        <!-- Temperature & Activity Comparison -->
+        <div id="comparison-container">
+            <h3>Temperature & Activity Comparison</h3>
+            <select id="dataMode">
+                <option value="average">Average</option>
+                <option value="individual">Individual Cases</option>
             </select>
-        <div id="temp-hist" style="display: block;"></div>
-        <div id="activity-hist" style="display: none;"></div>
-    </div>
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="../js/histogram_overlayed.js"></script>
-
-    <!-- Temperature & Activity Comparison -->
-    <h3>Temperature & Activity Comparison</h3>
-
-    <select id="dataMode">
-        <option value="average">Average</option>
-        <option value="individual">Individual Cases</option>
-    </select>
-    <div id="individualControls" style="margin:10px 0;"></div>
-    <div style="display: flex; justify-content: center;">
-        <div style="width: 90vw; height: 40vh;">
-            <div id="comparison_chart"></div>
+            <div id="individualControls" style="margin:10px 0;"></div>
+            <div style="display: flex; justify-content: center;">
+                <div style="width: 90vw; height: 40vh;">
+                    <div id="comparison-chart"></div>
+                    <div id="chart-container" style="position: relative;">
+                        <div id="individual-chart" style="display: none;"></div>
+                        <div id="individual-chart-controls" style="display: none;"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="actTooltip" style="position:absolute; pointer-events:none; background:#fff; padding:5px; border:1px solid #ccc; display:none;"></div>
+            <div id="tooltip" style="position:absolute; pointer-events:none; background:#fff; padding:5px; border:1px solid #ccc; display:none;"></div>
         </div>
     </div>
-
-    <select id="actDataMode" style="margin:20px 0;">
-        <option value="average">Average</option>
-        <option value="individual">Individual Cases</option>
-      </select>
-    <div id="actIndividualControls" style="margin:10px 0;"></div>
-    <div style="display: flex; justify-content: center;">
-        <div style="width: 90vw; height: 40vh;">
-            <div id="activity_chart"></div>
-            
-        </div>
-    </div>
-    <div id="actTooltip" style="position:absolute; pointer-events:none; background:#fff; padding:5px; border:1px solid #ccc; display:none;"></div>
-    <div id="tooltip" style="position:absolute; pointer-events:none; background:#fff; padding:5px; border:1px solid #ccc; display:none;"></div>
-
-
+    <script src="../js/comparison.js"></script>
+    <script src="../js/controller.js"></script>
+    <script src="../js/individual.js"></script>
 </body>
 </html>

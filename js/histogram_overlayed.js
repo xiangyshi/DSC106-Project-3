@@ -23,24 +23,6 @@ const svg = d3.select("#temp-hist")
   .append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
 
-
-
-// kernel density estimator
-// function kernelDensityEstimator(kernel, X) {
-//     return function(V) {
-//         return X.map(function(x) {
-//             return [x, d3.mean(V, function(v) { return kernel(x - v); })];
-//         });
-//     };
-// }
-
-// // Gaussian kernel
-// function gaussianKernel(bandwidth) {
-//     return function(u) {
-//         return Math.exp(-0.5 * (u * u)) / (bandwidth * Math.sqrt(2 * Math.PI));
-//     };
-// }
-
 Promise.all([
     d3.csv("../assets/data/fem_temp.csv", d3.autoType),
     d3.csv("../assets/data/male_temp.csv", d3.autoType)
@@ -81,78 +63,73 @@ Promise.all([
         .style("display", "none");
 
     function showTooltip(event, d, gender) {
-        tooltip.style("display", "block")
-            .html(`Gender: ${gender}<br>Temperature Range: ${d.x0.toFixed(2)} - ${d.x1.toFixed(2)}<br>Count: ${d.length}`)
-            .style("left", `${event.pageX + 10}px`)
-            .style("top", `${event.pageY - 20}px`);
+        // Only show the tooltip if the opacity is 0.7
+        const opacity = gender === "Female" ? d3.select(".fem-rect").style("opacity") : d3.select(".male-rect").style("opacity");
+    
+        if (opacity === "0.7") {
+            tooltip.style("display", "block")
+                .html(`Sex: ${gender}<br>Temperature Range: ${d.x0.toFixed(2)} C° - ${d.x1.toFixed(2)}C° <br>Count: ${d.length}`)
+                .style("left", `${event.pageX + 10}px`)
+                .style("top", `${event.pageY - 20}px`);
+        }
     }
-
     function hideTooltip() {
         tooltip.style("display", "none");
     }
 
-
     svg.selectAll(".fem-rect")
-        .data(femBins)
-        .join("rect")
-            .attr("class", "fem-rect")
-            .attr("x", 1)
-            .attr("transform", d => `translate(${x(d.x0)} , ${y(d.length)})`)
-            .attr("width", d => Math.max(1, x(d.x1) - x(d.x0) - 1))
-            .attr("height", d => height - y(d.length))
-            .style("fill", "orange")
-            .style("opacity", 0.7)
-            .on("mouseover", (event, d) => showTooltip(event, d, "Female"))
-            .on("mousemove", (event, d) => showTooltip(event, d, "Female"))
-            .on("mouseout", hideTooltip);
+    .data(femBins)
+    .join("rect")
+        .attr("class", "fem-rect")
+        .attr("x", 1)
+        .attr("transform", d => `translate(${x(d.x0)} , ${y(d.length)})`)
+        .attr("width", d => Math.max(1, x(d.x1) - x(d.x0) - 1))
+        .attr("height", d => height - y(d.length))
+        .style("fill", "red")
+        .style("opacity", 0.7)
+        .on("mouseover", (event, d) => showTooltip(event, d, "Female"))
+        .on("mousemove", (event, d) => showTooltip(event, d, "Female"))
+        .on("mouseout", hideTooltip)
+        .on("click", function () {
+            const isMaleDimmed = svg.selectAll(".male-rect").style("opacity") === "0.3";
 
-    svg.selectAll(".male-rect")
-        .data(maleBins)
-        .join("rect")
-            .attr("class", "male-rect")
-            .attr("x", 1)
-            .attr("transform", d => `translate(${x(d.x0)} , ${y(d.length)})`)
-            .attr("width", d => Math.max(1, x(d.x1) - x(d.x0) - 1))
-            .attr("height", d => height - y(d.length))
-            .style("fill", "steelblue")
-            .style("opacity", 0.7)
-            .on("mouseover", (event, d) => showTooltip(event, d, "Male"))
-            .on("mousemove", (event, d) => showTooltip(event, d, "Male"))
-            .on("mouseout", hideTooltip);
+            // Toggle opacity of male bins
+            svg.selectAll(".male-rect")
+                .style("opacity", isMaleDimmed ? 0.7 : 0.3); // If male bins are dimmed, restore them, otherwise dim them
 
+            // Toggle opacity of female bins
+            svg.selectAll(".fem-rect")
+                .style("opacity", isMaleDimmed ? 0.3 : 0.7); // If male bins are dimmed, restore female bins, otherwise dim them
 
-    // kernel density estimates
-    // const bandwidth = 0.2; // Adjust bandwidth
-    // const kde = kernelDensityEstimator(gaussianKernel(bandwidth), x.ticks(40));
+            svg.selectAll(".fem-rect").raise();  // Bring clicked female bin to the front
+        });
 
-    // const femDensity = kde(femAvg);
-    // const maleDensity = kde(maleAvg);
+svg.selectAll(".male-rect")
+    .data(maleBins)
+    .join("rect")
+        .attr("class", "male-rect")
+        .attr("x", 1)
+        .attr("transform", d => `translate(${x(d.x0)} , ${y(d.length)})`)
+        .attr("width", d => Math.max(1, x(d.x1) - x(d.x0) - 1))
+        .attr("height", d => height - y(d.length))
+        .style("fill", "steelblue")
+        .style("opacity", 0.7)
+        .on("mouseover", (event, d) => showTooltip(event, d, "Male"))
+        .on("mousemove", (event, d) => showTooltip(event, d, "Male"))
+        .on("mouseout", hideTooltip)
+        .on("click", function () {
+            const isFemaleDimmed = svg.selectAll(".fem-rect").style("opacity") === "0.3";
 
-    // const yDensity = d3.scaleLinear()
-    //     .range([height, 0])
-    //     .domain([0, d3.max([...femDensity, ...maleDensity], d => d[1])]);
+            // Toggle opacity of female bins
+            svg.selectAll(".fem-rect")
+                .style("opacity", isFemaleDimmed ? 0.7 : 0.3); // If female bins are dimmed, restore them, otherwise dim them
 
-    // const line = d3.line()
-    //     .curve(d3.curveBasis)
-    //     .x(d => x(d[0]))
-    //     .y(d => yDensity(d[1]));
+            // Toggle opacity of male bins
+            svg.selectAll(".male-rect")
+                .style("opacity", isFemaleDimmed ? 0.3 : 0.7); // If female bins are dimmed, restore male bins, otherwise dim them
 
-    // svg.append("path")
-    //     .datum(femDensity)
-    //     .attr("class", "line")
-    //     .attr("d", line)
-    //     .style("fill", "none")
-    //     .style("stroke", "orange")
-    //     .style("stroke-width", 2);
-
-
-    // svg.append("path")
-    //     .datum(maleDensity)
-    //     .attr("class", "line")
-    //     .attr("d", line)
-    //     .style("fill", "none")
-    //     .style("stroke", "steelblue")
-    //     .style("stroke-width", 2);
+            svg.selectAll(".male-rect").raise();  // Bring clicked male bin to the front
+        });
 
     // title
     svg.append("text")
@@ -181,36 +158,82 @@ Promise.all([
         .style("font-size", "12px")
         .text("Frequency");
 
-    // legend
-    const legend = svg.append("g")
-        .attr("transform", `translate(${width - 100}, 0)`);
+// legend
+const legend = svg.append("g")
+    .attr("transform", `translate(${width - 100}, 0)`);
 
-    legend.append("rect")
-        .attr("x", 0)
-        .attr("y", 0)
-        .attr("width", 10)
-        .attr("height", 10)
-        .style("fill", "orange");
+// Female legend
+legend.append("rect")
+    .attr("x", 0)
+    .attr("y", 0)
+    .attr("width", 10)
+    .attr("height", 10)
+    .style("fill", "red")
+    .style("cursor", "pointer")
+    .on("click", function () {
+        // Show female bars and dim male bars
+        svg.selectAll(".fem-rect")
+            .style("opacity", 0.7);  // Make female bars fully visible
 
-    legend.append("text")
-        .attr("x", 20)
-        .attr("y", 10)
-        .style("font-size", "15px")
-        .text("Female Mice");
+        svg.selectAll(".male-rect")
+            .style("opacity", 0.3);  // Dim male bars
 
-    legend.append("rect")
-        .attr("x", 0)
-        .attr("y", 20)
-        .attr("width", 10)
-        .attr("height", 10)
-        .style("fill", "steelblue");
+        svg.selectAll(".fem-rect").raise();  // Bring female bars to the front
+    });
 
-    legend.append("text")
-        .attr("x", 20)
-        .attr("y", 30)
-        .style("font-size", "15px")
-        .text("Male Mice");    
-    
+legend.append("text")
+    .attr("x", 20)
+    .attr("y", 10)
+    .style("font-size", "15px")
+    .style("cursor", "pointer")
+    .text("Female Mice")
+    .on("click", function () {
+        // Show female bars and dim male bars
+        svg.selectAll(".fem-rect")
+            .style("opacity", 0.7);  // Make female bars fully visible
+
+        svg.selectAll(".male-rect")
+            .style("opacity", 0.3);  // Dim male bars
+
+        svg.selectAll(".fem-rect").raise();  // Bring female bars to the front
+    });
+
+// Male legend
+legend.append("rect")
+    .attr("x", 0)
+    .attr("y", 20)
+    .attr("width", 10)
+    .attr("height", 10)
+    .style("fill", "steelblue")
+    .style("cursor", "pointer")
+    .on("click", function () {
+        // Show male bars and dim female bars
+        svg.selectAll(".male-rect")
+            .style("opacity", 1);  // Make male bars fully visible
+
+        svg.selectAll(".fem-rect")
+            .style("opacity", 0.3);  // Dim female bars
+
+        svg.selectAll(".male-rect").raise();  // Bring male bars to the front
+    });
+
+legend.append("text")
+    .attr("x", 20)
+    .attr("y", 30)
+    .style("font-size", "15px")
+    .style("cursor", "pointer")
+    .text("Male Mice")
+    .on("click", function () {
+        // Show male bars and dim female bars
+        svg.selectAll(".male-rect")
+            .style("opacity", 1);  // Make male bars fully visible
+
+        svg.selectAll(".fem-rect")
+            .style("opacity", 0.3);  // Dim female bars
+
+        svg.selectAll(".male-rect").raise();  // Bring male bars to the front
+    });
+
 });
 }
 
@@ -262,10 +285,16 @@ function drawActivityHistogram() {
             .style("display", "none");;
 
         function showTooltip(event, d, gender) {
-            tooltip.style("display", "block")
-                .html(`Gender: ${gender}<br>Activity Range: ${d.x0.toFixed(2)} - ${d.x1.toFixed(2)}<br>Count: ${d.length}`)
-                .style("left", `${event.pageX + 10}px`)
-                .style("top", `${event.pageY - 20}px`);
+            // Only show the tooltip if the opacity is 0.7 for the selected gender
+            const rects = gender === "Female" ? svg.selectAll(".fem-rect") : svg.selectAll(".male-rect");
+            const opacity = rects.style("opacity");
+        
+            if (opacity === "0.7") {
+                tooltip.style("display", "block")
+                    .html(`Sex: ${gender}<br>Activity Range: ${d.x0.toFixed(0)} - ${d.x1.toFixed(0)}<br>Count: ${d.length}`)
+                    .style("left", `${event.pageX + 10}px`)
+                    .style("top", `${event.pageY - 20}px`);
+            }
         }
 
         function hideTooltip() {
@@ -273,33 +302,70 @@ function drawActivityHistogram() {
         }
 
 
-        svg.selectAll(".fem-rect")
-            .data(femBins)
-            .join("rect")
-                .attr("class", "fem-rect")
-                .attr("x", 1)
-                .attr("transform", d => `translate(${x(d.x0)} , ${y(d.length)})`)
-                .attr("width", d => Math.max(1, x(d.x1) - x(d.x0) - 1))
-                .attr("height", d => height - y(d.length))
-                .style("fill", "red")
-                .style("opacity", 0.7)
-                .on("mouseover", (event, d) => showTooltip(event, d, "Female"))
-                .on("mousemove", (event, d) => showTooltip(event, d, "Female"))
-                .on("mouseout", hideTooltip);
+    svg.selectAll(".fem-rect")
+        .data(femBins)
+        .join("rect")
+            .attr("class", "fem-rect")
+            .attr("x", 1)
+            .attr("transform", d => `translate(${x(d.x0)} , ${y(d.length)})`)
+            .attr("width", d => Math.max(1, x(d.x1) - x(d.x0) - 1))
+            .attr("height", d => height - y(d.length))
+            .style("fill", "red")
+            .style("opacity", 0.7)
+            .on("mouseover", (event, d) => showTooltip(event, d, "Female"))
+            .on("mousemove", (event, d) => showTooltip(event, d, "Female"))
+            .on("mouseout", hideTooltip)
+            .on("click", function () {
+                // Check if male bins are dimmed, then toggle opacity
+                const isMaleDimmed = svg.selectAll(".male-rect").style("opacity") === "0.3";
 
-        svg.selectAll(".male-rect")
-            .data(maleBins)
-            .join("rect")
-                .attr("class", "male-rect")
-                .attr("x", 1)
-                .attr("transform", d => `translate(${x(d.x0)} , ${y(d.length)})`)
-                .attr("width", d => Math.max(1, x(d.x1) - x(d.x0) - 1))
-                .attr("height", d => height - y(d.length))
-                .style("fill", "steelblue")
-                .style("opacity", 0.8)
-                .on("mouseover", (event, d) => showTooltip(event, d, "Male"))
-                .on("mousemove", (event, d) => showTooltip(event, d, "Male"))
-                .on("mouseout", hideTooltip);
+                // Toggle opacity of male bins
+                svg.selectAll(".male-rect")
+                    .style("opacity", isMaleDimmed ? 0.7 : 0.3);  // If male bins are dimmed, restore them, otherwise dim them
+
+                // Toggle opacity of female bins
+                svg.selectAll(".fem-rect")
+                    .style("opacity", isMaleDimmed ? 0.3 : 0.7);  // If male bins are dimmed, restore female bins, otherwise dim them
+
+                if (isMaleDimmed) {
+                    svg.selectAll(".male-rect").raise();
+                } else {
+                    svg.selectAll(".fem-rect").raise();
+                }  // Bring clicked female bin to the front
+            });
+
+    svg.selectAll(".male-rect")
+        .data(maleBins)
+        .join("rect")
+            .attr("class", "male-rect")
+            .attr("x", 1)
+            .attr("transform", d => `translate(${x(d.x0)} , ${y(d.length)})`)
+            .attr("width", d => Math.max(1, x(d.x1) - x(d.x0) - 1))
+            .attr("height", d => height - y(d.length))
+            .style("fill", "steelblue")
+            .style("opacity", 0.8)
+            .on("mouseover", (event, d) => showTooltip(event, d, "Male"))
+            .on("mousemove", (event, d) => showTooltip(event, d, "Male"))
+            .on("mouseout", hideTooltip)
+            .on("click", function () {
+                // Check if female bins are dimmed, then toggle opacity
+                const isFemaleDimmed = svg.selectAll(".fem-rect").style("opacity") === "0.3";
+
+                // Toggle opacity of female bins
+                svg.selectAll(".fem-rect")
+                    .style("opacity", isFemaleDimmed ? 0.7 : 0.3);  // If female bins are dimmed, restore them, otherwise dim them
+
+                // Toggle opacity of male bins
+                svg.selectAll(".male-rect")
+                    .style("opacity", isFemaleDimmed ? 0.3 : 0.7);  // If female bins are dimmed, restore male bins, otherwise dim them
+
+                if (isFemaleDimmed) {
+                    svg.selectAll(".fem-rect").raise();
+                } else {
+                    svg.selectAll(".male-rect").raise();
+                }
+                  // Bring clicked male bin to the front
+            });
 
         
         svg.append("text")
@@ -326,34 +392,61 @@ function drawActivityHistogram() {
             .style("font-size", "12px")
             .text("Frequency");
 
-        const legend = svg.append("g")
+            const legend = svg.append("g")
             .attr("transform", `translate(${width - 100}, 0)`);
-
+        
         legend.append("rect")
             .attr("x", 0)
             .attr("y", 0)
             .attr("width", 10)
             .attr("height", 10)
-            .style("fill", "red");
-
+            .style("fill", "red")
+            .style("cursor", "pointer")  // Add cursor to indicate interactivity
+            .on("click", function () {
+                // Show female bars, hide male bars
+                svg.selectAll(".fem-rect")
+                    .style("opacity", 0.7);  // Make female bars fully visible
+        
+                svg.selectAll(".male-rect")
+                    .style("opacity", 0.3);  // Dim male bars
+        
+                // Bring female bars to the front
+                svg.selectAll(".fem-rect").raise();
+            });
+        
         legend.append("text")
             .attr("x", 20)
             .attr("y", 10)
             .style("font-size", "15px")
+            .style("cursor", "pointer")  // Add cursor to text as well
             .text("Female Mice");
-
+        
         legend.append("rect")
             .attr("x", 0)
             .attr("y", 20)
             .attr("width", 10)
             .attr("height", 10)
-            .style("fill", "steelblue");
-
+            .style("fill", "steelblue")
+            .style("cursor", "pointer")  // Add cursor to indicate interactivity
+            .on("click", function () {
+                // Show male bars, hide female bars
+                svg.selectAll(".male-rect")
+                    .style("opacity", 0.7);  // Make male bars fully visible
+        
+                svg.selectAll(".fem-rect")
+                    .style("opacity", 0.3);  // Dim female bars
+        
+                // Bring male bars to the front
+                svg.selectAll(".male-rect").raise();
+            });
+        
         legend.append("text")
             .attr("x", 20)
             .attr("y", 30)
             .style("font-size", "15px")
-            .text("Male Mice");    
+            .style("cursor", "pointer")  // Add cursor to text as well
+            .text("Male Mice");
+        
 
     });
 }
@@ -370,118 +463,4 @@ drawTemperatureHistogram();
 drawActivityHistogram();
 switchHistogram();
 
-    // function brushSelector() {
-    //     const svg = document.querySelector('svg');
-    //     d3.select(svg).call(d3.brush());
-    //     d3.select(svg).selectAll('.tooltip, .overlay ~ *').raise();
-    // }
-    // brushSelector();
-    // // Add brushing
-    // const brush = d3.brushX()
-    //     .extent([[0, 0], [width, height]])
-    //     .on("brush end", brushed);
 
-    // svg.append("g")
-    //     .attr("class", "brush")
-    //     .call(brush);
-
-    // function brushed(event) {
-    //     const selection = event.selection;
-    //     if (selection === null) {
-    //         svg.selectAll(".fem-rect")
-    //             .data(femBins)
-    //             .join("rect")
-    //                 .attr("class", "fem-rect")
-    //                 .attr("x", 1)
-    //                 .attr("transform", d => `translate(${x(d.x0)} , ${y(d.length)})`)
-    //                 .attr("width", d => Math.max(1, x(d.x1) - x(d.x0) - 1))
-    //                 .attr("height", d => height - y(d.length))
-    //                 .style("fill", "orange")
-    //                 .style("opacity", 0.7)
-    //                 .on("mouseover", (event, d) => showTooltip(event, d, "Female"))
-    //                 .on("mousemove", (event, d) => showTooltip(event, d, "Female"))
-    //                 .on("mouseout", hideTooltip);
-
-    //         svg.selectAll(".male-rect")
-    //             .data(maleBins)
-    //             .join("rect")
-    //                 .attr("class", "male-rect")
-    //                 .attr("x", 1)
-    //                 .attr("transform", d => `translate(${x(d.x0)} , ${y(d.length)})`)
-    //                 .attr("width", d => Math.max(1, x(d.x1) - x(d.x0) - 1))
-    //                 .attr("height", d => height - y(d.length))
-    //                 .style("fill", "steelblue")
-    //                 .style("opacity", 0.7)
-    //                 .on("mouseover", (event, d) => showTooltip(event, d, "Male"))
-    //                 .on("mousemove", (event, d) => showTooltip(event, d, "Male"))
-    //                 .on("mouseout", hideTooltip);
-    //         return;
-    //     }
-
-    //     const [x0, x1] = selection.map(x.invert);
-    //     const filteredFemBins = femBins.filter(d => d.x0 >= x0 && d.x1 <= x1);
-    //     const filteredMaleBins = maleBins.filter(d => d.x0 >= x0 && d.x1 <= x1);
-
-    //     svg.selectAll(".fem-rect")
-    //         .data(filteredFemBins)
-    //         .join("rect")
-    //             .attr("class", "fem-rect")
-    //             .attr("x", 1)
-    //             .attr("transform", d => `translate(${x(d.x0)} , ${y(d.length)})`)
-    //             .attr("width", d => Math.max(1, x(d.x1) - x(d.x0) - 1))
-    //             .attr("height", d => height - y(d.length))
-    //             .style("fill", "orange")
-    //             .style("opacity", 0.7)
-    //             .on("mouseover", (event, d) => showTooltip(event, d, "Female"))
-    //             .on("mousemove", (event, d) => showTooltip(event, d, "Female"))
-    //             .on("mouseout", hideTooltip);
-        
-    //     svg.selectAll(".male-rect")
-    //         .data(filteredMaleBins)
-    //         .join("rect")
-    //             .attr("class", "male-rect")
-    //             .attr("x", 1)
-    //             .attr("transform", d => `translate(${x(d.x0)} , ${y(d.length)})`)
-    //             .attr("width", d => Math.max(1, x(d.x1) - x(d.x0) - 1))
-    //             .attr("height", d => height - y(d.length))
-    //             .style("fill", "steelblue")
-    //             .style("opacity", 0.7)
-    //             .on("mouseover", (event, d) => showTooltip(event, d, "Male"))
-    //             .on("mousemove", (event, d) => showTooltip(event, d, "Male"))
-    //             .on("mouseout", hideTooltip);
-    //     }
-
-    //     svg.on("click", function(event) {
-    //     if (event.target.tagName === 'svg') {
-    //         svg.select(".brush").call(brush.move, null);
-    //         brushed({selection: null});
-    //     }
-    // });
-
-    // svg.append("rect")
-    //     .attr("class", "overlay")
-    //     .attr("width", width)
-    //     .attr("height", height)
-    //     .style("fill", "none")
-    //     .style("pointer-events", "all")
-    //     .on("mousemove", function(event) {
-    //         const [mouseX, mouseY] = d3.pointer(event);
-    //         const closestFemBin = femBins.reduce((a, b) => (
-    //             Math.abs(x(b.x0) - mouseX) < Math.abs(x(a.x0) - mouseX) ? b : a
-    //         ));
-    //         const closestMaleBin = maleBins.reduce((a, b) => (
-    //             Math.abs(x(b.x0) - mouseX) < Math.abs(x(a.x0) - mouseX) ? b : a
-    //         ));
-
-    //         const closestBin = Math.abs(x(closestFemBin.x0) - mouseX) < Math.abs(x(closestMaleBin.x0) - mouseX) ? closestFemBin : closestMaleBin;
-    //         const gender = closestBin === closestFemBin ? "Female" : "Male";
-
-    //         showTooltip(event, closestBin, gender);
-    //     })
-    //     .on("mouseout", hideTooltip)
-    //     .on("click", function(event) {
-    //         svg.select(".brush").call(brush.move, d3.brushSelection(this));
-    //     });
-
-    
-    

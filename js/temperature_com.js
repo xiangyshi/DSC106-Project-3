@@ -108,7 +108,7 @@ function normalizeData(data) {
     d3.select("#comparison_chart").html("");
   
     // Common dimensions and margins.
-    const width = 800,
+    const width = 1600,
           height = 400,
           margin = { top: 20, right: 50, bottom: 50, left: 50 };
   

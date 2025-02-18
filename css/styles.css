@@ -76,3 +76,69 @@ tr:nth-child(even) {
 tr:hover {
     background: #e9ecef;
 };
+
+#histogram-container, #comparison-container {
+    display: none;
+}
+
+#histogram-container.active, #comparison-container.active {
+    display: block;
+}
+
+/* Style for the top menu buttons */
+nav {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    gap: 20px; /* space between buttons */
+}
+
+nav button {
+    font-size: 18px; /* make the text larger */
+    padding: 15px 30px; /* make the button larger */
+    background-color: #007bff; /* white background */
+    border: 2px solid white; /* green border */
+    color: white; /* initial text color is green */
+    cursor: pointer; /* change the cursor to pointer on hover */
+    text-transform: uppercase; /* make the text uppercase */
+    border-radius: 30px; /* rounded corners */
+    transition: all 0.3s ease; /* smooth transition for hover effects */
+}
+
+/* Hover effect */
+nav button:hover {
+    background-color: white; /* background color on hover */
+    color: #007bff; /* change text color */
+}
+
+/* Active button style */
+nav button.active {
+    background-color: white; /* green background */
+    color: #007bff; /* white text */
+    font-weight: bold; /* highlight the active button */
+}
+
+/* Centering the main container */
+#super-container {
+    display: flex;
+    flex-direction: column; /* Stack the elements vertically */
+    align-items: center; /* Center items horizontally */
+    height: 100vh; /* Make the container take full height of the viewport */
+    padding: 20px;
+}
+
+/* Center the individual plot containers */
+#histogram-container, #comparison-container {
+    display: grid;
+    justify-content: center; /* Center the plots horizontally */
+    width: 90%; /* Make the plot container take up most of the page width */
+    margin: 20px 0;
+}
+
+/* Centering the individual plots inside the containers */
+#temp-hist, #activity-hist, #comparison-chart {
+    width: 100%; /* Allow the plots to take the full width of their container */
+    max-width: 1200px; /* Optional: limit max width of the plots */
+    height: auto;
+}
+
