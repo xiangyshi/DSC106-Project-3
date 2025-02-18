@@ -449,8 +449,8 @@ function createIndividualGraph(maleActivity, femaleActivity, maleTemperature, fe
             .html(`<strong>Time:</strong> ${timeFormatted}<br>
                    <strong>Male Activity:</strong> ${d_raw_mact.values[0]}<br>
                    <strong>Female Activity:</strong> ${d_raw_fact.values[0]}<br>
-                   <strong>Male Temp:</strong> ${d_raw_mtemp.values[0]}<br>
-                   <strong>Female Temp:</strong> ${d_raw_ftemp.values[0]}`)
+                   <strong>Male Temp:</strong> ${d_raw_mtemp.values[0]} C°<br>
+                   <strong>Female Temp:</strong> ${d_raw_ftemp.values[0]} C°`)
             .style("left", (xPos + margin.left + 20) + "px")
             .style("top", (mouse[1] + margin.top) + "px");
     }
