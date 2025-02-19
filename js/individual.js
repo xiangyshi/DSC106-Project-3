@@ -102,9 +102,14 @@ function createIndividualGraph(maleActivity, femaleActivity, maleTemperature, fe
 
     const svg = d3.select("#individual-chart")
         .append("svg")
+        .attr("class", "comp-svg")
+        .attr("viewBox", `0 0 ${width} ${height}`)  // Responsive
+        .attr("preserveAspectRatio", "xMidYMid meet")  // Keeps aspect ratio
+        .style("width", "100%")  // Ensures it stretches
+        .style("height", "auto")  // Scales properly
         .attr("width", width)
         .attr("height", height)
-      .append("g")
+        .append("g")
         .attr("transform", `translate(${margin.left},${margin.top})`);
 
     const xScale = d3.scaleLinear()
@@ -217,55 +222,103 @@ function createIndividualGraph(maleActivity, femaleActivity, maleTemperature, fe
             .style("opacity", isVisible ? 0.8 : 0);
     }
 
-    // Create checkbox controls in the controls container.
-    const controls = d3.select("#individual-chart-controls");
+        // Select the controls container and make it draggable.
+    // Select the container and set its position.
+    const controls = d3.select("#individual-chart-controls")
+    .style("position", "absolute")
+    .style("border", "1px solid #ccc")
+    .style("left", "1000px") // Initial left position
+    .style("top", "-50px"); // Initial top position
+
+    // Create a header bar for dragging.
+    const header = controls.append("div")
+    .attr("class", "header-bar")
+    .style("background-color", "#ddd")
+    .style("padding", "5px")
+    .style("cursor", "move")
+    .text("Drag here");
+
+    // Variable to store the offset between the mouse position and the container's top-left corner.
+    let offset = { x: 0, y: 0 };
+
+    // Apply the drag behavior only to the header bar.
+    header.call(d3.drag()
+    .on("start", function(event) {
+        // Get the current position of the container.
+        const style = window.getComputedStyle(controls.node());
+        const left = parseFloat(style.left);
+        const top = parseFloat(style.top);
+        // Calculate the offset between where the mouse is and the container's top-left.
+        offset.x = event.x - left;
+        offset.y = event.y - top;
+        controls.raise(); // Bring the container to the front.
+    })
+    .on("drag", function(event) {
+        // Move the container, keeping the initial offset.
+        controls.style("left", (event.x - offset.x) + "px")
+                .style("top", (event.y - offset.y) + "px");
+    })
+    .on("end", function() {
+        // Optionally reset the offset.
+        offset = { x: 0, y: 0 };
+    })
+    );
+
+    // Create a body for the controls.
+    const body = controls.append("div")
+    .attr("class", "control-body")
+    .style("padding", "5px");
+
+    // Add your control elements to the body.
+    body.append("label")
+    .attr("for", "windowSizeInput")
+    .text("Smoothing Window Size: ");
     
-    controls.append("label")
-        .attr("for", "windowSizeInput")
-        .text("Smoothing Window Size: ");
-    controls.append("input")
-        .attr("id", "windowSizeInput")
-        .attr("type", "text")
-        .attr("value", initialWindowSize)
-        .style("margin-left", "5px");
-    controls.append("button")
-        .text("Update")
-        .style("margin-left", "5px")
-        .on("click", function() {
-            const newWindowSize = +d3.select("#windowSizeInput").property("value");
-            initialWindowSize = newWindowSize;
-            updateChart(newWindowSize);
+    body.append("input")
+    .attr("id", "windowSizeInput")
+    .attr("type", "text")
+    .attr("value", initialWindowSize)
+    .style("margin-left", "5px");
+
+    body.append("button")
+    .text("Update")
+    .style("margin-left", "5px")
+    .on("click", function() {
+        const newWindowSize = +d3.select("#windowSizeInput").property("value");
+        initialWindowSize = newWindowSize;
+        updateChart(newWindowSize);
     });
 
-    // Create dropdown for male mice selection
-    const maleDropdown = controls.append("div")
-        .append("label")
-        .text("Select Male Mouse: ")
-        .append("select")
-        .attr("id", "male-mouse-dropdown")
-        .on("change", updateMouse); // Trigger update when the dropdown changes
+    // Create dropdown for male mice selection.
+    const maleDropdown = body.append("div")
+    .append("label")
+    .text("Select Male Mouse: ")
+    .append("select")
+    .attr("id", "male-mouse-dropdown")
+    .on("change", updateMouse);
 
-    // Add options for male mice (f1 to f13)
+    // Add options for male mice (m1 to m13).
     d3.range(1, 14).forEach(i => {
-        maleDropdown.append("option")
-            .attr("value", i - 1)
-            .text(`m${i}`);
+    maleDropdown.append("option")
+        .attr("value", i - 1)
+        .text(`m${i}`);
     });
 
-    // Create dropdown for female mice selection
-    const femaleDropdown = controls.append("div")
-        .append("label")
-        .text("Select Female Mouse: ")
-        .append("select")
-        .attr("id", "female-mouse-dropdown")
-        .on("change", updateMouse); // Trigger update when the dropdown changes
+    // Create dropdown for female mice selection.
+    const femaleDropdown = body.append("div")
+    .append("label")
+    .text("Select Female Mouse: ")
+    .append("select")
+    .attr("id", "female-mouse-dropdown")
+    .on("change", updateMouse);
 
-    // Add options for female mice (f1 to f13)
+    // Add options for female mice (f1 to f13).
     d3.range(1, 14).forEach(i => {
-        femaleDropdown.append("option")
-            .attr("value", i - 1)
-            .text(`f${i}`);
+    femaleDropdown.append("option")
+        .attr("value", i - 1)
+        .text(`f${i}`);
     });
+
 
     // Array representing each category.
     let categories = [

@@ -1,6 +1,5 @@
 #chart-container {
-    position: relative;
-    width: 1600px;  /* or adjust as needed */
+    position: flex;
     margin: auto;
 }
 
@@ -18,4 +17,8 @@
 }
 #individual-chart-controls div {
     margin-bottom: 5px;
+}
+
+.comp-svg {
+    display: flex;
 }
