@@ -14,6 +14,7 @@
     <nav>
         <button id="showHistogram" class="active">Histogram</button>
         <button id="showComparison">Comparison</button>
+        <button id="showWriteup">Write Up</button>
     </nav>
 
     <div id="super-container">
@@ -24,10 +25,10 @@
                 <h3>Introduction to the Temperature Data</h3>
                 <p style="padding: 50px; text-align: justify; text-align-last: center;">
                 The temperature data reveals a <strong>bi-modal pattern</strong> with two distinct peaks.
-                In the <strong>first peak (36.1°C to 36.7°C)</strong>, the temperature counts for female
+                In the <strong>first peak (36.4°C to 36.8°C)</strong>, the temperature counts for female
                 mice are <strong>significantly higher than those for male mice</strong>. In the
                 <strong>second peak</strong>, the values for males and females <strong>diverge slightly</strong>,
-                with <strong>males peaking around 37.3°C</strong> and <strong>females around 38.1°C</strong>.
+                with <strong>males peaking around 37.4°C</strong> and <strong>females around 38°C</strong>.
                 This observation led us to investigate potential factors contributing to these differences.
                 We explore the <strong>daily cycle patterns</strong>, <strong>activity levels</strong>, and
                 <strong>the estrous cycle in female mice</strong> to better understand the underlying causes.
@@ -56,6 +57,13 @@
                 On the left, you may select to switch from a <strong>general view (averaged data)</strong>, to a more detailed, exploration mode to compare <strong>individual mice.</strong>
                 Note that the data are standardized using min-max normalization for axis-alignment, but the tooltip shows original raw data at a specific timestamp.
                 </p>
+
+                <h3> Observation </h3>
+                <p style="padding: 50px; text-align: justify; text-align-last: center;">
+                    We observed that female mice’s <strong> temperature rises </strong> rapidly at the start of each estrus cycle and <strong> gradually drops </strong> , consistently remaining higher than male mice’s temperature. 
+                    Male mice consistently showed <strong> higher activity levels </strong> , though temperature never surpassed female, which we found interesting. 
+                    We suspect this pattern is due to female ovulation cycles affecting both temperature and activity.
+                </p>
             </div>
             <select id="dataMode">
                 <option value="average">Average</option>
@@ -72,6 +80,28 @@
                 </div>
             </div>
             <div id="tooltip" style="position: absolute; display: none; background: rgba(255,255,255,0.9); padding: 5px; border: 1px solid #ccc; border-radius: 3px; pointer-events: none; font-family: sans-serif; font-size: 12px;"></div>
+        </div>
+        <div id="writeup-container" style="align-content: center;">
+            <h2> Motivation </h2>
+            <p style="padding: 50px; text-align: justify;">
+                We notice that the trend of the temperature data is bi-modal. For the first peak, the count of temperature values for female mice and male mice are significantly different around the range 36.4 to 36.8 (where female temperature counts are a lot higher), and the second peak are located slightly different (male at 37.5 and female at 38). We want to explore the reasoning behind this difference through explorations in their daily cycle, and potential interactions to their activity level, as well as the estrus cycle in female mice. Therefore, we want this visualization to convey information about the average daily temperature activity level across the mice samples and compare the female samples to the male. We hope that not only us, the readers can also explore the data themselves and come to their own answer for this peculiar question.
+            </p>
+            <h2> Rationale for the Design </h2>
+            <p style="padding: 50px; text-align: justify;">
+                For the histogram, the visual encodings in the histograms were chosen to prioritize clarity and comparison. The female data is encoded with red for the histograms, while male is represented in steel blue. The colors were chosen to be in contrast so that the 2 groups (male and female mice) were easily distinguishable. On top of colors, the opacity was chosen to be 0.7, which allows the user to compare the overlapping bars with ease. Legend is there to explicitly map the gender group with the color so that the viewer distinguishes the data even when not hovering over the bar. Interactive tooltips here present core information (gender, range, and count of mice in that bin) when the user hovers over the bars. This allows us to easily check the important data without assuming or miscalculating the heights of the bars.
+                <br><br>
+                For the comparison plot, we want to give the readers the ability to explore either the average data across all samples and the individual case. Therefore, we add a select button for the readers to choose whether they want to examine the problem generally or individually. In addition, we also want to enable the reader to compare the temperature data to the activity data - to see how their trends are similar or different to each other. Therefore, we apply normalization to the dataset to avoid the unit problem. However, the normalization omits the actual value of each point which is rather important if we want to do a point to point comparison between female and male samples. We solve this problem by putting that information inside the tooltip: when the readers draw their mouse to one point on the graph, the tooltip will emerge and display all relevant information about this (or those if multiple plots displayed) graph. Those relevant information include the actual value for each data point. We also add a feature that enables the reader to choose whether to display a certain line or not. This is because putting all plots together could be very messy if the reader only wants to analyze one or two plots. Furthermore, the smoothing window size option is added to the visualization that readers can customize the smoothing applied in the plots. If the readers want to see the general trend of the plot, they can increase the window size, or decrease it if they want details. Lastly, we add some red vertical dot lines to the graph to emphasize the Estrus day and use light and dark color in the background of the graph to represent day and night periods.
+                <br><br>
+                We chose light yellow for day periods and black for night periods to create an intuitive temporal context. These colors mirror natural light cycles, making it immediately clear to readers when events occur in the 24-hour cycle without requiring constant reference to time markers. The colors are kept at a low opacity to avoid competing with the data visualization while still providing clear temporal boundaries.
+                <br><br>
+                We employed the opponent encoding model to maximize visual distinction between variables. Activity data uses blue (male) and red (female) as opposing colors, while temperature data uses orange (male) and purple (female). This creates two clear opposing pairs that are both perceptually distinct and logically grouped, allowing readers to easily track four different variables simultaneously while maintaining visual clarity.
+            </p>
+            <h2> Development Process </h2>
+            <p style="padding: 50px; text-align: justify;">
+                We began by exploring potential questions we can ask and answer using the mouse data, and our starting question was: “To what degree do body temperature and activity level in mice correlate across the 14 days?” We planned to create various visualizations comparing the features (temperature and activity) across male and female mice. So for the checkpoint, three members focused on creating two visualizations each to extract as much meaningful information as possible, while one member built the website, worked on the integration of the graphs, and recorded the video. 
+                <br><br>
+                The checkpoint visualizations presented intriguing observations and raised the interesting question mentioned above, so we decided to explore the differences between the records of male and female mice. One member developed an interactive overlaid histogram, originated from the separate static histograms which we observed the difference in peaks, that shows the distribution across the sexes. This visualization serves as the ‘introduction’ to our project question. Two members worked on the comparison graphs (male vs female) to explore and discover the reason behind the differences. The last member worked on dynamic displays and integrated all the visualizations into the website. Each member roughly spent ~10 hours working on this project, with graph creation and debugging being the most time-consuming.
+            </p>
         </div>
     </div>
     <script src="../js/comparison.js"></script>

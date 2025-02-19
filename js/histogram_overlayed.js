@@ -209,7 +209,7 @@ legend.append("rect")
     .on("click", function () {
         // Show male bars and dim female bars
         svg.selectAll(".male-rect")
-            .style("opacity", 1);  // Make male bars fully visible
+            .style("opacity", 0.7);  // Make male bars fully visible
 
         svg.selectAll(".fem-rect")
             .style("opacity", 0.3);  // Dim female bars
@@ -226,7 +226,7 @@ legend.append("text")
     .on("click", function () {
         // Show male bars and dim female bars
         svg.selectAll(".male-rect")
-            .style("opacity", 1);  // Make male bars fully visible
+            .style("opacity", 0.7);  // Make male bars fully visible
 
         svg.selectAll(".fem-rect")
             .style("opacity", 0.3);  // Dim female bars

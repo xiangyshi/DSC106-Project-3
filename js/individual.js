@@ -322,16 +322,17 @@ function createIndividualGraph(maleActivity, femaleActivity, maleTemperature, fe
 
     // Array representing each category.
     let categories = [
-        { label: "Male Activity", color: "blue", line: maleActivityLine },
-        { label: "Female Activity", color: "red", line: femaleActivityLine },
-        { label: "Male Temperature", color: "orange", line: maleTemperatureLine },
-        { label: "Female Temperature", color: "purple", line: femaleTemperatureLine }
+        { label: "Male Activity", color: "blue", line: maleActivityLine, class:"mact-cbox"},
+        { label: "Female Activity", color: "red", line: femaleActivityLine, class:"fact-cbox" },
+        { label: "Male Temperature", color: "orange", line: maleTemperatureLine, class:"mtemp-cbox" },
+        { label: "Female Temperature", color: "purple", line: femaleTemperatureLine, class:"ftemp-cbox" }
     ];
 
     categories.forEach(cat => {
         const container = controls.append("div").style("margin", "5px").attr("class", "cbox");
         container.append("input")
             .attr("class", "cbox")
+            .attr("class", cat.class)
             .attr("type", "checkbox")
             .property("checked", true)
             .on("change", function() {
@@ -358,6 +359,7 @@ function createIndividualGraph(maleActivity, femaleActivity, maleTemperature, fe
             const container = controls.append("div").style("margin", "5px").attr("class", "cbox");
             container.append("input")
                 .attr("type", "checkbox")
+                .attr("class", cat.class)
                 .property("checked", true)
                 .on("change", function() {
                     toggleLineVisibility(cat.line, this.checked);
@@ -485,10 +487,31 @@ function createIndividualGraph(maleActivity, femaleActivity, maleTemperature, fe
             .attr("x1", xPos)
             .attr("x2", xPos);
 
-        focusCircleMaleAct.attr("cx", xPos).attr("cy", yScale(d_mact.values[0]));
-        focusCircleFemaleAct.attr("cx", xPos).attr("cy", yScale(d_fact.values[0]));
-        focusCircleMaleTemp.attr("cx", xPos).attr("cy", yScale(d_mtemp.values[0]));
-        focusCircleFemaleTemp.attr("cx", xPos).attr("cy", yScale(d_ftemp.values[0]));
+        const selectedMale = d3.select("#male-mouse-dropdown").property("value");
+        const selectedFemale = d3.select("#female-mouse-dropdown").property("value");
+
+        let mactCheck = d3.select(".mact-cbox").property("checked");  // Ensure the correct class for male activity checkbox
+        let factCheck = d3.select(".fact-cbox").property("checked");  // Ensure the correct class for female activity checkbox
+        let mtempCheck = d3.select(".mtemp-cbox").property("checked");  // Ensure the correct class for male temp checkbox
+        let ftempCheck = d3.select(".ftemp-cbox").property("checked");  // Ensure the correct class for female temp checkbox
+        
+        console.log(mactCheck, factCheck, mtempCheck, ftempCheck);
+        // Update circles based on checkbox states
+        focusCircleMaleAct.attr("cx", xPos)
+            .attr("cy", yScale(d_mact.values[selectedMale]))
+            .attr("class", mactCheck ? "active" : "hidden");
+
+        focusCircleFemaleAct.attr("cx", xPos)
+            .attr("cy", yScale(d_fact.values[selectedFemale]))
+            .attr("class", factCheck ? "active" : "hidden");
+
+        focusCircleMaleTemp.attr("cx", xPos)
+            .attr("cy", yScale(d_mtemp.values[selectedMale]))
+            .attr("class", mtempCheck ? "active" : "hidden");
+
+        focusCircleFemaleTemp.attr("cx", xPos)
+            .attr("cy", yScale(d_ftemp.values[selectedFemale]))
+            .attr("class", ftempCheck ? "active" : "hidden");
 
         // Format the time from minutes to day/hour/minute.
         const totalMinutes = d_raw_mact.time;

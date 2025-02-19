@@ -161,3 +161,11 @@ nav button.active {
 #individual-chart-controls:active {
     cursor: grabbing;
 }
+
+.hidden {
+    display: none !important;
+}
+
+.active {
+    display: block; /* or inline, depending on the element */
+}

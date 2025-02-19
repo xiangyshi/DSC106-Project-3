@@ -267,10 +267,10 @@ addLegend("purple", "Temp C° (F)", 60);
       .attr("y2", height - margin.top - margin.bottom);
 
   // Four focus circles—one for each series.
-  const focusCircleActivityMale = focus.append("circle").attr("r", 4).attr("fill", "royalblue");
-  const focusCircleActivityFemale = focus.append("circle").attr("r", 4).attr("fill", "lightblue");
+  const focusCircleActivityMale = focus.append("circle").attr("r", 4).attr("fill", "blue");
+  const focusCircleActivityFemale = focus.append("circle").attr("r", 4).attr("fill", "red");
   const focusCircleTempMale = focus.append("circle").attr("r", 4).attr("fill", "orange");
-  const focusCircleTempFemale = focus.append("circle").attr("r", 4).attr("fill", "gold");
+  const focusCircleTempFemale = focus.append("circle").attr("r", 4).attr("fill", "purple");
 
   // Overlay rectangle to capture mouse events.
   svg.append("rect")
